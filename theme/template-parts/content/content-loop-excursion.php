@@ -1,12 +1,12 @@
 <?php
 $category_id = get_query_var('custom_id', false);
-
+$count = 0;
 if (isset($category_id)) {
 
 
 	// Получаем все дочерние категории для таксономии excursion
 	$child_categories = get_terms([
-		'taxonomy' => 'excursion_category',
+		'taxonomy' => 'excursion',
 		'child_of' => $category_id, // ID родительской категории
 		'fields' => 'ids', // Получаем только ID категорий
 		'hide_empty' => true, // Показывать только категории с постами
@@ -17,11 +17,11 @@ if (isset($category_id)) {
 
 	// Настройка WP_Query
 	$query = new WP_Query([
-		'post_type' => 'excursion', // Замените на ваш тип записей, если это не стандартный
+		'post_type' => 'tours', // Замените на ваш тип записей, если это не стандартный
 		'posts_per_page' => -1, // Показывать все посты (или укажите ограничение)
 		'tax_query' => [
 			[
-				'taxonomy' => 'excursion_category',
+				'taxonomy' => 'excursion',
 				'field' => 'term_id',
 				'terms' => $categories,
 				'include_children' => false, // Дочерние категории уже включены вручную
@@ -30,43 +30,118 @@ if (isset($category_id)) {
 	]);
 
 	// Проверяем, есть ли посты
-	if ($query->have_posts()) {
-		while ($query->have_posts()) {
-			$query->the_post();
-			$fields = get_fields();
-			?>
-			<div class="flex flex-col gap-4">
-				<a href="<?php echo get_permalink() ?>" class="relative">
-					<img class="rounded-xl w-full" src="<?php echo $fields['gallery'][0]['sizes']['medium_large']; ?>" alt="<?php echo $fields['gallery'][0]['name']; ?>">
-					<div class="absolute left-3 bottom-4 flex gap-1 items-center">
-						<span class="text-white font-600 leading-100"><?php echo $fields['duration'];?></span>
-					</div>
-				</a>
-				<div class="flex flex-wrap text-xl text-global-luckypush font-400">
-					<span class="mr-1"><?php echo $fields['price'];?> / <?php echo $fields['discount_price'];?></span>
+	if ($query->have_posts()) : ?>
+		<div class="filter">
+			<!-- Форма с полем для выбора даты -->
+			<form id="filter-form" class="flex gap-8 mb-8">
+				<input type="hidden" id="category_id" value="<?php echo $category_id; ?>" />
+				<div class="relative inline-block text-left">
+					<label class="gap-3 items-center flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+						<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M14.6571 2.17143H10.3143V0.814286C10.3143 0.364568 9.94972 0 9.5 0C9.05028 0 8.68571 0.364568 8.68571 0.814286V2.17143H4.34286V0.814286C4.34286 0.364568 3.97829 0 3.52857 0C3.07885 0 2.71429 0.364568 2.71429 0.814286V2.1836C1.19252 2.32073 0 3.59967 0 5.15714V16.0143C0 17.6632 1.33675 19 2.98571 19H16.0143C17.6633 19 19 17.6632 19 16.0143V5.15714C19 3.59967 17.8075 2.32073 16.2857 2.1836V0.814286C16.2857 0.364568 15.9211 0 15.4714 0C15.0217 0 14.6571 0.364568 14.6571 0.814286V2.17143ZM2.98571 3.8C2.23619 3.8 1.62857 4.40761 1.62857 5.15714V7.05714H17.3714V5.15714C17.3714 4.40761 16.7638 3.8 16.0143 3.8H2.98571ZM1.62857 16.0143V8.68571H17.3714V16.0143C17.3714 16.7638 16.7638 17.3714 16.0143 17.3714H2.98571C2.23619 17.3714 1.62857 16.7638 1.62857 16.0143Z" fill="#777777"/>
+						</svg>
+						<input type="text" id="datepicker" name="date" required>
+						<svg xmlns="http://www.w3.org/2000/svg" class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+						</svg>
+					</label>
 				</div>
-				<button class="wish-btn content__tour__wish-btn group" data-wp-id="<?php echo $post->ID; ?>">
-					<div class="icon">
-						<svg class="w-6 h-6 fill-current text-[#A5A5A5] group-[.active]:text-red-600">
-							<path class="icon-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+				<div class="relative inline-block text-left">
+					<button type="button" class="dropdown-button gap-3 items-center flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" aria-expanded="false" aria-haspopup="true" data-close-on-click="true">
+						<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
+							<path d="M9.5 4.67762C9.90359 4.67762 10.2308 5.0048 10.2308 5.40839V10.1717L12.6041 12.545C12.8894 12.8303 12.8894 13.293 12.6041 13.5784C12.3187 13.8638 11.856 13.8638 11.5706 13.5784L8.98327 10.9911C8.84622 10.854 8.76923 10.6682 8.76923 10.4744V5.40839C8.76923 5.0048 9.09641 4.67762 9.5 4.67762Z" fill="#777777"/>
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M9.5 19C14.7467 19 19 14.7467 19 9.5C19 4.25329 14.7467 0 9.5 0C4.25329 0 0 4.25329 0 9.5C0 14.7467 4.25329 19 9.5 19ZM9.5 17.5385C5.06048 17.5385 1.46154 13.9395 1.46154 9.5C1.46154 5.06048 5.06048 1.46154 9.5 1.46154C13.9395 1.46154 17.5385 5.06048 17.5385 9.5C17.5385 13.9395 13.9395 17.5385 9.5 17.5385Z" fill="#777777"/>
 						</svg>
-					</div>
-				</button>
-				<?php if (isset($fields['video_after_gates']) && !empty($fields['video_after_gates'])): ?>
-					<span class="has_video" data-ll-status="observed">
-						<svg height="100%" version="1.1" viewBox="0 0 68 48" width="35" ><path class="" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.27,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00"></path><path d="M 45,24 27,14 27,34" fill="#fff"></path>
+						<span class="dropdown-text">Длительность</span>
+						<svg xmlns="http://www.w3.org/2000/svg" class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
 						</svg>
-					</span>
-				<?php endif ?>
-				<a href="<?php echo get_permalink() ?>" class="text-3xl font-700 leading-100"><?php echo get_the_title(); ?></a>
-			</div>
-			<?php
-		}
-	} else {
-		echo '<p>Нет записей для выбранной категории.</p>';
-	}
+					</button>
+					<div class="dropdown-menu absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none hidden text-change-class">
+						<div class="flex flex-col p-5 gap-4">
+							<label class="item flex gap-2 items-center">
+								<input type="radio" name="duration" value="" class="scale-150 change_text">
+								<span>Любая</span>
+							</label>
 
-	// Сбрасываем глобальный объект WP_Query
-	wp_reset_postdata();
+							<label class="item flex gap-2 items-center">
+								<input type="radio" name="duration" value="3" class="scale-150 change_text">
+								<span>До 3-х часов</span>
+							</label>
+
+							<label class="item flex gap-2 items-center">
+								<input type="radio" name="duration" value="5" class="scale-150 change_text">
+								<span>3-5 часов</span>
+							</label>
+
+							<label class="item flex gap-2 items-center">
+								<input type="radio" name="duration" value="more5" class="scale-150 change_text">
+								<span>Более 5 часов</span>
+							</label>
+						</div>
+					</div>
+				</div>
+				<div class="relative inline-block text-left">
+					<button type="button" class="dropdown-button gap-3 items-center flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" aria-expanded="false" aria-haspopup="true" data-close-on-click="true">
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="13" viewBox="0 0 18 13" fill="none">
+							<path fill-rule="evenodd" clip-rule="evenodd" d="M16.7143 2.09678H1.28571C0.576 2.09678 0 1.625 0 1.04839C0 0.471775 0.576 0 1.28571 0H16.7143C17.424 0 18 0.471775 18 1.04839C18 1.625 17.424 2.09678 16.7143 2.09678ZM0 6.50003C0 5.92342 0.576 5.45165 1.28571 5.45165H11.5714C12.2811 5.45165 12.8571 5.92342 12.8571 6.50003C12.8571 7.07665 12.2811 7.54842 11.5714 7.54842H1.28571C0.576 7.54842 0 7.07665 0 6.50003ZM0 11.9516C0 11.375 0.576 10.9032 1.28571 10.9032H11.5714C12.2811 10.9032 12.8571 11.375 12.8571 11.9516C12.8571 12.5282 12.2811 13 11.5714 13H1.28571C0.576 13 0 12.5282 0 11.9516Z" fill="#777777"/>
+						</svg>
+						<span class="dropdown-text">По популярности</span>
+						<svg xmlns="http://www.w3.org/2000/svg" class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+							<path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+						</svg>
+					</button>
+					<div class="dropdown-menu absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none hidden">
+						<div class="py-1">
+							<div class="flex flex-col p-5 gap-4">
+								<label class="item flex gap-2 items-center">
+									<input type="radio" name="grade" value="pops" class="scale-150 change_text">
+									<span>По популярности</span>
+								</label>
+
+								<label class="item flex gap-2 items-center">
+									<input type="radio" name="grade" value="expensive" class="scale-150 change_text ">
+									<span>По возрастанию цены</span>
+								</label>
+
+								<label class="flex gap-2 items-center">
+									<input type="radio" name="grade" value="chip" class="scale-150 change_text">
+									<span>По убыванию цены</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<label class="flex gap-2 items-center">
+					<input type="checkbox" name="have_sale" class="scale-150">
+					<span>Со скидкой</span>
+				</label>
+			</form>
+				<div id="response" class="mb-8">
+					<div class="content__tours grid gap-8 ms:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4" id="tours">
+						<?php while ($query->have_posts()) :
+							$query->the_post();
+							$fields = get_fields();
+							$cost = $fields['neva_fullprice_custom'] ?? '';
+							if (!empty($fields['duration'])) {
+								$duration_no_let = preg_replace("/[^,.:0-9]/", '', correctTime($fields['duration']));
+								$duration_clear = str_replace(',','.',$duration_no_let);
+							}
+							?>
+							<!-- Фильтруемый контент -->
+							<div class="card item px-[15px] basis-0 grow" data-duration="<?php echo $duration_clear; ?>" data-cost="<?php echo $cost; ?>" data-popular="<?php echo ++$count;?>">
+								<div class="shadow-[4px_4px_20px_#0000001a] group overflow-hidden rounded-[10px] bg-white">
+									<div class="overflow-hidden mb-5 min-h-[300px]">
+										<a href="<?php echo get_permalink(); ?>"><?php echo get_the_title();	?></a>
+									</div>
+								</div>
+							</div>
+						<?php endwhile; ?>
+					</div>
+				</div>
+		</div>
+	<?php else : ?>
+		<p>Нет записей для выбранной категории.</p>
+	<?php endif; wp_reset_postdata();
 
 }

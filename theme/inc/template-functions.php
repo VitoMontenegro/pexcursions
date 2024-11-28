@@ -206,101 +206,6 @@ function tw_html5_comment( $comment, $args, $depth ) {
 	<?php
 }
 
-function register_custom_post_type() {
-	/**
-	 * Post Type: Экскурсии.
-	 */
-	register_post_type('excursion', [
-			'labels' => [
-					'name' => 'Экскурсии',
-					'singular_name' => 'Экскурсия',
-					"all_items" => "Все экскурсии",
-					"add_new" => "Добавить экскурсию",
-					"add_new_item" => "Добавить новую экскурсию",
-					"edit_item" => "Редактировать экскурсию",
-					"new_item" => "Новая экскурсия",
-			],
-			'public' => true,
-			'hierarchical' => false, // Для поддержки иерархии
-			'rewrite' => ['slug' => 'excursion', 'with_front' => false], // Пустой slug
-			'supports' => ['title', 'editor', 'thumbnail'],
-			'menu_icon' => 'dashicons-admin-site-alt',
-			'taxonomies' => ['excursion_category'], // Подключаем таксономию
-	]);
-
-	/**
-	 * Post Type: Отзывы.
-	 */
-	register_post_type('reviews', [
-			'labels' => [
-					'name' => 'Отзывы',
-					'singular_name' => 'Отзыв',
-					"all_items" => "Все отзывы",
-					"add_new" => "Добавить отзыв",
-					"add_new_item" => "Добавить новый отзыв",
-					"edit_item" => "Редактировать отзыв",
-					"new_item" => "Новый отзыв",
-			],
-			"description" => "",
-			"public" => true,
-			"publicly_queryable" => false,
-			"show_ui" => true,
-			"delete_with_user" => false,
-			"show_in_rest" => true,
-			"rest_base" => "",
-			"rest_controller_class" => "WP_REST_Posts_Controller",
-			"has_archive" => false,
-			"show_in_menu" => true,
-			"show_in_nav_menus" => true,
-			"exclude_from_search" => false,
-			"capability_type" => "post",
-			"map_meta_cap" => true,
-			"hierarchical" => false,
-			'menu_icon' => 'dashicons-format-chat',
-			"rewrite" => array( "slug" => "reviews", "with_front" => true ),
-			"query_var" => true,
-			"supports" => array( "title", "editor"),
-	]);
-}
-add_action('init', 'register_custom_post_type');
-
-function register_custom_taxonomy() {
-	/**
-	 * Таксономия: Категория экскурсий.
-	 */
-	register_taxonomy('excursion_category', 'excursion', [
-			'hierarchical' => true, // Позволяет создавать подкатегории
-			'labels' => [
-					'name' => 'Категории',
-					'singular_name' => 'Категория',
-					"add_new_item" => "Добавить новую категорию",
-					'search_items'      => 'Найти категорию',
-					'all_items'         => 'Все категории',
-					'view_item '        => 'Смотреть категорию',
-					'parent_item'       => 'Родительская категория',
-					'parent_item_colon' => 'Родительская категория:',
-					'edit_item'         => 'Редактировать категорию',
-					'update_item'       => 'Обновить',
-					'menu_name'         => 'Категории',
-					'back_to_items'     => '← Назад к категории',
-			],
-			'rewrite' => [
-					'slug' => 'excursion_category',
-					'hierarchical' => false,
-					'with_front' => false,
-			],
-	]);
-}
-add_action('init', 'register_custom_taxonomy');
-
-add_action('pre_get_posts', 'set_home_to_category');
-function set_home_to_category($query) {
-	if ($query->is_main_query() && $query->is_home() && !is_admin()) {
-		$query->set('taxonomy', 'excursion');
-		$query->set('term', 'ekskursii-peterburg');
-	}
-}
-
 // add optionpage
 if( function_exists('acf_add_options_page') ) {
 
@@ -352,186 +257,234 @@ function fix_svg_mime_type( $data, $file, $filename, $mimes, $real_mime = '' ){
 }
 add_filter( 'wp_check_filetype_and_ext', 'fix_svg_mime_type', 10, 5 );
 
-function set_default_discount_price($post_id) {
-	if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
 
-	$price = get_field('price', $post_id);
-	$discount_price = get_field('discount_price', $post_id);
-
-	if (empty($discount_price) && !empty($price)) {
-		update_field('discount_price', $price, $post_id);
-	}
+function register_custom_taxonomy() {
+	/**
+	 * Таксономия: Категория экскурсий.
+	 */
+	register_taxonomy('excursion', 'tours', [
+			'hierarchical' => true, // Позволяет создавать подкатегории
+			'labels' => [
+					'name'              => 'Виды экскурсий',
+					'singular_name'     => 'Вид экскурсий',
+					'search_items'      => 'Поиск видов экскурсий',
+					'all_items'         => 'Все виды экскурсий',
+					'edit_item'         => 'Редактировать вид экскурсий',
+					'update_item'       => 'Обновить вид экскурсий',
+					'add_new_item'      => 'Добавить новый вид экскурсий',
+					'new_item_name'     => 'Новое имя вида экскурсий',
+					'menu_name'         => 'Виды экскурсий',
+					'view_item '        => 'Просмотр вида экскурсий',
+					'parent_item'       => 'Родительский вид экскурсий',
+					'parent_item_colon' => 'Родительский вид экскурсий:',
+					'back_to_items'     => '← Назад к категории',
+			],
+			'show_ui'       => true,
+			'query_var'     => true,
+			"show_admin_column" => true,
+			'rewrite' => [
+					'slug' => 'excursion'
+			],
+			'show_in_rest' => true,
+			'rest_base' => 'excursion'
+	]);
 }
-add_action('acf/save_post', 'set_default_discount_price', 10, 1);
+add_action('init', 'register_custom_taxonomy');
 
-function get_nested_categories($taxonomy = 'category') {
-	// Получаем все категории таксономии
-	$terms = get_terms([
-			'taxonomy' => $taxonomy,
-			'hide_empty' => false, // Показывать пустые категории
-			'parent' => 0, // Только родительские категории
+
+function register_custom_post_type() {
+	/**
+	 * Post Type: Экскурсии.
+	 */
+	register_post_type('tours', [
+			'labels' => [
+					'name' => 'Экскурсии',
+					'singular_name' => 'Экскурсии',
+					'add_new' => 'Добавить экскурсию',
+					'add_new_item' => 'Добавить новую экскурсию',
+					'edit_item' => 'Редактировать экскурсию',
+					'new_item' => 'Новая экскурсия',
+					'all_items' => 'Все экскурсии',
+					'view_item' => 'Просмотр экскурсии на сайте',
+					'search_items' => 'Искать экскурсию',
+					'not_found' =>  'Экскурсия не найдена.',
+					'not_found_in_trash' => 'В корзине нет экскурсий.',
+					'menu_name' => 'Экскурсии'
+			],
+			'public' => true,
+			'show_ui' => true,
+			'has_archive' => true,
+			'menu_position' => 20,
+			'supports' => array( 'title', 'editor', 'comments', 'author', 'thumbnail','custom-fields', 'revisions'),
+			'menu_icon' => 'dashicons-admin-site-alt',
+			'taxonomies'          => array( 'excursion' ),
+			'show_in_rest' => true,
+			'rest_base'             => 'tours',
+			'rest_controller_class' => 'WP_REST_Posts_Controller',
 	]);
 
-	if (empty($terms) || is_wp_error($terms)) {
-		//return [];
-
-	}
-
-	$categories = [];
-	foreach ($terms as $term) {
-		$categories[] = [
-				'id' => $term->term_id,
-				'name' => $term->name,
-				'slug' => $term->slug,
-				'link' => get_term_link($term),
-				'children' => get_child_categories($term->term_id, $taxonomy),
-		];
-	}
-
-	return $categories;
-}
-
-function get_child_categories($parent_id, $taxonomy) {
-	$child_terms = get_terms([
-			'taxonomy' => $taxonomy,
-			'hide_empty' => false,
-			'parent' => $parent_id,
+	/**
+	 * Post Type: Отзывы.
+	 */
+	register_post_type('reviews', [
+			'labels' => [
+					"name" => "Отзывы",
+					"singular_name" => "Отзыв",
+					"menu_name" => "Отзывы",
+					"all_items" => "Все отзывы",
+					"add_new" => "Добавить отзыв",
+					"add_new_item" => "Добавить новый отзыв",
+					"edit_item" => "Редактировать отзыв",
+					"new_item" => "Новый отзыв",
+					"view_item" => "Смотреть отзыв",
+					"view_items" => "Смотреть отзывы",
+					"search_items" => "Найти отзыв",
+					"not_found" => "Отзывы не найдены",
+					"not_found_in_trash" => "Отзывы не найдены в корзине",
+					"featured_image" => "Изображение",
+					"set_featured_image" => "Установить изображение",
+					"remove_featured_image" => "Удалить изображение",
+					"use_featured_image" => "Использовать как изображение к отзыву",
+					"archives" => "Архив отзывов",
+					"insert_into_item" => "Вставить в отзыв",
+					"uploaded_to_this_item" => "Загружено к этому отзыву",
+					"filter_items_list" => "Фильтровать список отзывов",
+					"items_list_navigation" => "Навигация по списку отзывов",
+					"items_list" => "Список отзывов",
+					"attributes" => "Атрибуты отзыва",
+					"name_admin_bar" => "Отзыв",
+					"parent_item_colon" => "Родительский отзыв",
+			],
+			"description" => "",
+			"public" => true,
+			"publicly_queryable" => true,
+			"show_ui" => true,
+			"delete_with_user" => false,
+			"show_in_rest" => true,
+			"rest_base" => "",
+			"rest_controller_class" => "WP_REST_Posts_Controller",
+			"has_archive" => false,
+			"show_in_menu" => true,
+			"show_in_nav_menus" => true,
+			"exclude_from_search" => false,
+			"capability_type" => "post",
+			"map_meta_cap" => true,
+			"hierarchical" => false,
+			"rewrite" => [
+				"slug" => "reviews", "with_front" => true
+			],
+			"query_var" => true,
+			"supports" => ["title", "editor"]
 	]);
 
-	if (empty($child_terms) || is_wp_error($child_terms)) {
-		return [];
-	}
-
-	$children = [];
-	foreach ($child_terms as $child_term) {
-		$children[] = [
-				'id' => $child_term->term_id,
-				'name' => $child_term->name,
-				'slug' => $child_term->slug,
-				'link' => get_term_link($child_term),
-				'children' => get_child_categories($child_term->term_id, $taxonomy), // Рекурсивный вызов
-		];
-	}
-
-	return $children;
-}
-
-function get_top_parent_category($term_id, $taxonomy = 'category') {
-	$term = get_term($term_id, $taxonomy);
-	if (!$term || is_wp_error($term)) {
-		return null;
-	}
-
-	while ($term->parent != 0) {
-		$term = get_term($term->parent, $taxonomy);
-	}
-
-	return $term;
-}
-
-function get_nested_categories_by_parent($parent_id, $taxonomy = 'excursion_category') {
-	$terms = get_terms([
-			'taxonomy' => $taxonomy,
-			'hide_empty' => false,
-			'parent' => $parent_id,
+	/**
+	 * Post Type: Акции.
+	 */
+	register_post_type( "promos", [
+			"labels" => [
+				"name" => "Акции",
+				"singular_name" => "Акция",
+				"menu_name" => "Акции",
+				"all_items" => "Все акции",
+				"add_new" => "Добавить акцию",
+				"add_new_item" => "Добавить новую акцию",
+				"edit_item" => "Редактировать акцию",
+				"new_item" => "Новая акция",
+				"view_item" => "Смотреть акцию",
+				"view_items" => "Смотреть акции",
+				"search_items" => "Найти акцию",
+				"not_found" => "Акции не найдены",
+				"not_found_in_trash" => "Акции не найдены в корзине",
+				"parent" => "Родительская акция",
+				"featured_image" => "Картинка к этой акции",
+				"set_featured_image" => "Установить картинку к этой акции",
+				"remove_featured_image" => "Удалить картинку акции",
+				"use_featured_image" => "Использовать как изображение к акции",
+				"archives" => "Архивы акций",
+				"insert_into_item" => "Вставить в акцию",
+				"uploaded_to_this_item" => "Загружено к этой акции",
+				"filter_items_list" => "Фильтровать список акций",
+				"items_list_navigation" => "Навигация по списку акций",
+				"items_list" => "Список акций",
+				"attributes" => "Атрибуты акции",
+				"name_admin_bar" => "Акция",
+				"parent_item_colon" => "Родительская акция",
+			],
+			"description" => "",
+			"public" => true,
+			"publicly_queryable" => true,
+			"show_ui" => true,
+			"show_in_rest" => true,
+			"rest_base" => "",
+			"rest_controller_class" => "WP_REST_Posts_Controller",
+			"rest_namespace" => "wp/v2",
+			"has_archive" => true,
+			"show_in_menu" => true,
+			"show_in_nav_menus" => true,
+			"delete_with_user" => false,
+			"exclude_from_search" => false,
+			"capability_type" => "post",
+			"map_meta_cap" => true,
+			"hierarchical" => false,
+			"can_export" => true,
+			"rewrite" => [ "slug" => "promos", "with_front" => true ],
+			"query_var" => true,
+			"supports" => [ "title", "editor", "thumbnail" ],
+			"show_in_graphql" => false
 	]);
+}
+add_action('init', 'register_custom_post_type');
 
-	if (empty($terms) || is_wp_error($terms)) {
-		return [];
-	}
 
-	$categories = [];
-	foreach ($terms as $term) {
-		$all_category_ids = get_all_descendant_categories($term->term_id, $taxonomy);
+// скрыть в меню от пользоватля с ролью 'author'
+function tw_remove_menu_items() {
+	if( current_user_can( 'author' ) ):
+		remove_menu_page( 'edit.php?post_type=promos' );
+		remove_menu_page( 'edit.php?post_type=reviews' );
+		remove_menu_page( 'edit-comments.php' );
+		remove_menu_page( 'tools.php' );
+	endif;
+}
+add_action( 'admin_menu', 'tw_remove_menu_items' );
 
-		$posts_in_categories = get_posts([
-				'post_type' => 'excursion',
-				'post_status' => 'publish',
-				'tax_query' => [
-						[
-								'taxonomy' => $taxonomy,
-								'field' => 'term_id',
-								'terms' => $all_category_ids,
-								'include_children' => false,
-						],
-				],
-				'fields' => 'ids',
-		]);
 
-		$unique_post_ids = array_unique($posts_in_categories);
-		$post_count = count($unique_post_ids);
+//Вывод массива рейтингов экскурсий [excursion] => rating
+function get_rating_excursion () {
 
-		$single_post_slug = null;
-		if ($post_count === 1) {
-			$single_post = get_post(reset($unique_post_ids));
-			if ($single_post) {
-				$single_post_slug = $single_post->post_name;
+	$arr = [];
+
+	$args = array(
+			'posts_per_page' => '999',
+			'post_type' => 'reviews'
+	);
+	$query = new WP_Query( $args );
+
+	while ( $query->have_posts() ) {
+		$query->the_post();
+
+
+		if (get_field('excursion') &&  get_field('rating')) {
+			$excurs_arr = explode(',', get_field('excursion'));
+			foreach ($excurs_arr as  $value) {
+				$arr[$value][] = get_field('rating');
 			}
 		}
 
-		$categories[] = [
-				'id' => $term->term_id,
-				'name' => $term->name,
-				'slug' => $term->slug,
-				'link' => get_term_link($term),
-				'post_count' => $post_count,
-				'single_post_slug' => $single_post_slug,
-				'children' => get_nested_categories_by_parent($term->term_id, $taxonomy)
-		];
 	}
+	wp_reset_postdata();
 
-	return $categories;
-}
-
-function get_all_descendant_categories($parent_id, $taxonomy) {
-	$categories = [$parent_id];
-	$terms = get_terms([
-			'taxonomy' => $taxonomy,
-			'hide_empty' => false,
-			'parent' => $parent_id,
-	]);
-
-	foreach ($terms as $term) {
-		$categories = array_merge($categories, get_all_descendant_categories($term->term_id, $taxonomy));
-	}
-
-	return $categories;
-}
-
-function render_children_categories($children) { ?>
-	<div class="ps-4 pt-4">
-			<?php foreach ($children as $category) : ?>
-				<?php $link = $category["single_post_slug"] ?? $category['link']; ?>
-				<div>
-					<a href="<?php echo $link; ?>" class="flex items-center gap-2 group<?php echo is_current_category($category["id"]) ? ' active' : ''; ?>">
-						<span class="w-10 h-10 border-2 rounded-md border-black flex items-center justify-center group-active:bg-gray-200 group-[.active]:text-red-500 group-[.active]:border-red-500">
-									<span class="invisible group-[.active]:visible">✓</span>
-							</span>
-						<span class="text-black group-[.active]:text-red-500"><?php echo esc_html($category['name']); ?></span>
-					</a>
-					<?php if(!empty($child['children'])) {
-						render_children_categories($child['children']);
-					}?>
-				</div>
-			<?php endforeach; ?>
-		</div>
-	<?php
-}
-
-function is_current_category($term_id) {
-	if (is_tax() || is_category()) {
-		$current_term = get_queried_object();
-		if ($current_term && $current_term->term_id == $term_id) {
-			return true;
+	foreach ($arr as $key => $value) {
+		if (!empty($key)) {
+			$slice = array_slice($value, 0, 3);
+			$arr[$key] = array_sum($slice) / sizeof($slice);
+		} else {
+			unset($arr[$key]);
 		}
 	}
-	return false;
+
+	return $arr;
 }
 
-function my_custom_template($id, $part) {
-	set_query_var('custom_id', $id);
-	get_template_part($part);
-}
 
 function getYoutubeEmbedUrl($url) {
 	$pattern = '#^(?:https?://)?(?:www\.)?(?:youtu\.be/|youtube\.com(?:/embed/|/v/|/watch\?v=|/watch\?.+&v=))([\w-]{11})(?:.+)?$#x';
@@ -539,3 +492,74 @@ function getYoutubeEmbedUrl($url) {
 	return (isset($matches[1])) ? $matches[1] : false;
 }
 
+function getDzenSrc($url) {
+	$pattern = '/(https.*)(")/U';
+	preg_match($pattern, $url, $matches);
+
+	return (isset($matches[1])) ? $matches[1] : false;
+}
+
+function correctTime($time){
+	if (stripos($time,'h')>-1) return $time;
+	if (stripos($time,'мин')>-1) return $time;
+	if (stripos($time,'час')===false&&stripos($time,'-')===false){
+		if (stripos($time,':')>-1){
+			$arr_time = explode(':',$time);
+			if ($arr_time[1]=='30')
+				$time = $arr_time[0]+0.5;
+			else
+				$time = $arr_time[0];
+		}
+		if ($time == 1.5)
+			$time = $time.' часа';
+		else
+			$time = $time.' '.getNumEnding($time, array('час', 'часа', 'часов'));
+	}
+	return $time;
+}
+
+
+function getNumEnding($number, $endingArray) {
+	$number = (int)$number;
+	$number = $number % 100;
+	if ($number>=11 && $number<=19) {
+		$ending=$endingArray[2];
+	}
+	else {
+		$i = $number % 10;
+		switch ($i)
+		{
+			case (1): $ending = $endingArray[0]; break;
+			case (2):
+			case (3):
+			case (4): $ending = $endingArray[1]; break;
+			default: $ending=$endingArray[2];
+		}
+	}
+	return $ending;
+}
+function remove_all_acf_meta_boxes() {
+	?>
+	<script type="text/javascript">
+		document.addEventListener("DOMContentLoaded", function() {
+			// Скрыть все метабоксы ACF в редакторе
+			var metaBoxes = document.querySelectorAll('.edit-post-meta-boxes-main__presenter');
+			metaBoxes.forEach(function(metaBox) {
+				metaBox.style.display = 'none';
+			});
+
+			// Сделать контент редактируемым на всю ширину
+			var content = document.querySelector('.edit-post-layout__content');
+			if (content) {
+				content.style.width = '100%';
+			}
+		});
+	</script>
+	<?php
+}
+add_action('admin_head', 'remove_all_acf_meta_boxes');
+
+function my_custom_template($id, $part) {
+	set_query_var('custom_id', $id);
+	get_template_part($part);
+}

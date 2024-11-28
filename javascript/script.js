@@ -11,35 +11,114 @@
 
 document.addEventListener('DOMContentLoaded', function() {
 
+
+	// Инициализируем Flatpickr для выбора даты
+	const flatpickrElem = document.getElementById('datepicker');
+	if (flatpickrElem) {
+		flatpickr("#datepicker", {
+			dateFormat: "Y-m-d", // Формат даты
+			minDate: "today"
+		});
+	}
+
+	// Функция для открытия/закрытия dropdown
+	const dropdownButtons = document.querySelectorAll('.dropdown-button');
+	const dropdownMenus = document.querySelectorAll('.dropdown-menu');
+	if (dropdownButtons.length && dropdownMenus.length) {
+		dropdownButtons.forEach((button, index) => {
+			button.addEventListener('click', function () {
+				const menu = dropdownMenus[index];
+				const isExpanded = menu.classList.contains('hidden');
+				const closeOnClick = button.getAttribute('data-close-on-click') === 'true';
+
+				// Закрываем все меню, если они открыты
+				dropdownMenus.forEach((otherMenu, otherIndex) => {
+					if (otherIndex !== index) {
+						otherMenu.classList.add('hidden');
+						dropdownButtons[otherIndex].setAttribute('aria-expanded', 'false');
+					}
+				});
+
+				// Переключаем текущее меню
+				if (isExpanded) {
+					menu.classList.remove('hidden');
+					button.setAttribute('aria-expanded', 'true');
+				} else {
+					menu.classList.add('hidden');
+					button.setAttribute('aria-expanded', 'false');
+				}
+
+				// Закрытие меню при клике на элемент внутри (если установлено)
+				if (closeOnClick) {
+					const menuItems = menu.querySelectorAll('.item');
+					menuItems.forEach(item => {
+						item.addEventListener('click', function () {
+							menu.classList.add('hidden');
+							button.setAttribute('aria-expanded', 'false');
+						});
+					});
+				}
+			});
+		});
+
+		// Функция для обновления текста кнопки фильтра
+		function updateDropdownText(radio) {
+			const dropdownText = radio.closest('.relative').querySelector('.dropdown-text');
+			const span = radio.nextElementSibling; // Получаем <span> рядом с input
+			if (dropdownText && span) {
+				dropdownText.textContent = span.textContent; // Обновляем текст кнопки
+			}
+		}
+
+		// Обработчик кликов по элементам с классом .change_text
+		const changeTextElements = document.querySelectorAll('.change_text');
+		changeTextElements.forEach(item => {
+			item.addEventListener('click', function() {
+				updateDropdownText(item); // Обновляем текст на кнопке при клике на элемент
+			});
+		});
+
+		// Закрытие меню при клике вне его
+		window.addEventListener('click', function (event) {
+			if (!event.target.closest('.relative')) {
+				dropdownMenus.forEach(menu => menu.classList.add('hidden'));
+				dropdownButtons.forEach(button => button.setAttribute('aria-expanded', 'false'));
+			}
+		});
+	}
+
 	//filter excursion
 	const categoryIdElem = document.getElementById('category_id');
-
 	if(categoryIdElem) {
 		const categoryId = document.getElementById('category_id').value;
 		document.getElementById('filter-form').addEventListener('change', function() {
-			loadPosts(1);
+			console.log('form is changed!')
+			getCardsForDate();
 		});
-		document.getElementById('pagination').addEventListener('click', function(event) {
-			if (event.target.classList.contains('pagination-link')) {
-				const page = parseInt(event.target.dataset.page);
-				loadPosts(page);
-			}
-		});
-		function loadPosts(page) {
+		/*function loadPosts(page) {
 			// Собираем массив значений выбранных чекбоксов
 			const getCheckedValues = (name) => {
 				return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(input => input.value);
 			};
-			const duration = getCheckedValues('duration');
-			const price = getCheckedValues('price');
+
+
+			const date = document.getElementById("datepicker").value ?? '';
+			const duration = getCheckedValues('duration') ?? '';
+			const price = getCheckedValues('price') ?? '';
 			const postsPerPage = 10
-			const grade = getCheckedValues('grade');
+			const grade = getCheckedValues('grade' ?? '');
+			console.log('date>>',date)
+			console.log('duration>>',duration)
+			console.log('price>>',price)
+			console.log('postsPerPage>>',postsPerPage)
+			console.log('grade>>',grade)
 
 			const params = new URLSearchParams({
 				grade: JSON.stringify(grade),
 				price: JSON.stringify(price),
-				duration: JSON.stringify(duration),
+				duration,
 				page,
+				date,
 				posts_per_page: postsPerPage,
 				category_id: categoryId,
 			});
@@ -52,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					return response.text();
 				})
 				.then(html => {
-					document.getElementById('posts-container').innerHTML = html;
+					document.getElementById('response').innerHTML = html;
 					const wishBtns = document.getElementById('posts-container').querySelectorAll('.wish-btn');
 					if (wishButtons) {
 						let currentProducts = getCookie('product');
@@ -71,8 +150,70 @@ document.addEventListener('DOMContentLoaded', function() {
 					}
 				})
 				.catch(error => console.error('Error loading posts:', error));
+		}*/
+		function getCardsForDate(arr = '') {
+
+			const getCheckedValues = (name) => {
+				const checkedRadio = document.querySelector(`input[name="${name}"]:checked`);
+				return checkedRadio ? checkedRadio.value : '';  // Возвращаем строку или пустую строку
+			};
+			const contentTours = document.querySelector('.content__tours'); // блок с карточками туров
+			const cards = document.querySelectorAll('.card'); // карточки туров
+			const date = document.getElementById("datepicker").value ?? '';
+			const duration = getCheckedValues('duration') ?? '';
+			const haveSale = getCheckedValues('have_sale') ?? 0;
+			const sorts = getCheckedValues('grade' ?? '');
+			cards.forEach(card => card.style.display = 'block'); // Показываем все карточки
+
+			cards.forEach(card => {
+				if (haveSale) {
+					console.log('haveSale>>',haveSale)
+					if (!card.dataset.sale || card.dataset.sale !== '1') {
+						card.style.display = 'none';
+					}
+				}
+				if (duration) {
+					const cardDuration = parseFloat(card.dataset.duration);
+					console.log('duration>>',duration,cardDuration)
+					if (duration === '3') {
+						if (cardDuration > 3.5 || !cardDuration) card.style.display = 'none';
+					} else if (duration === '5') {
+						if (cardDuration <= 3 || cardDuration >= 5.5 || !cardDuration) card.style.display = 'none';
+					} else if (duration === 'more5') {
+						if (cardDuration < 5 || !cardDuration) card.style.display = 'none';
+					}
+				}
+				if(sorts) {
+					const cardsSort = Array.from(contentTours.getElementsByClassName('card'));
+					cardsSort.sort((a, b) => {
+						const costA = parseInt(a.getAttribute('data-cost'), 10);
+						const costB = parseInt(b.getAttribute('data-cost'), 10);
+						const costC = parseInt(a.getAttribute('data-popular'), 10);
+						const costD = parseInt(b.getAttribute('data-popular'), 10);
+
+						if (sorts === 'expensive') {
+							return costA - costB; // От меньшего к большему
+						} else if(sorts === 'chip') {
+							return costB - costA; // От большего к меньшему
+						} else {
+							return costC - costD; // От большего к меньшему
+						}
+					});
+
+					// Очистка контента перед добавлением отсортированных элементов
+					contentTours.innerHTML = '';
+
+					// Добавление отсортированных карточек обратно в контейнер
+					cardsSort.forEach(card => contentTours.appendChild(card));
+				}
+
+			});
+
 		}
+
 	}
+
+
 
 
 	//wishlist
@@ -97,7 +238,6 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	}
 	const devContainer = document.getElementById('posts-container');
-
 	if (devContainer) {
 		devContainer.addEventListener('click', (event) => {
 			const button = event.target.closest('.wish-btn');
@@ -128,6 +268,12 @@ document.addEventListener('DOMContentLoaded', function() {
 			setCookie('product', JSON.stringify(currentProducts), 7);
 		});
 	}
+
+
+
+
+
+
 
 	// Функция получения куки
 	function getCookie(name) {
@@ -270,5 +416,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 		});
 	}
+
+
 
 });

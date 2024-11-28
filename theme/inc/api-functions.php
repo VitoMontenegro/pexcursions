@@ -1,5 +1,5 @@
 <?php
-require($_SERVER['DOCUMENT_ROOT'].'/wp-load.php'); 
+require($_SERVER['DOCUMENT_ROOT'].'/wp-load.php');
 require_once(ABSPATH . 'wp-admin/includes/image.php');
 
 function custom_rest_filter_posts() {
@@ -19,16 +19,19 @@ add_action('rest_api_init', 'custom_rest_filter_posts');
 
 function handle_filter_posts_request(WP_REST_Request $request) {
 
-	$duration = $request->get_param('duration');
-	$price_ranges = $request->get_param('price');
-	$grade = $request->get_param('grade');
-	$posts_per_page = (int) $request->get_param('posts_per_page') ?: 5;
-	$page = (int) $request->get_param('page') ?: 1;
-	$category_id = $request->get_param('category_id');
+	$params = $request->get_params();
 
-	// Получаем дочерние категории
+	$grade = $params['grade'];
+	$price = $params['price'];
+	$duration= $params['duration'];
+	$page= $params['page'] ?? 1;
+	$date= $params['date'];
+	$posts_per_page= $params['posts_per_page'] ?? 10;
+	$category_id= $params['category_id'];
+
+
 	$child_categories = get_terms([
-		'taxonomy'    => 'excursion_category',
+		'taxonomy'    => 'excursion',
 		'child_of'    => $category_id,
 		'fields'      => 'ids',
 		'hide_empty'  => true,
@@ -37,12 +40,12 @@ function handle_filter_posts_request(WP_REST_Request $request) {
 
 	// Инициализация основного массива для WP_Query
 	$query_args = [
-		'post_type'      => 'excursion',
+		'post_type'      => 'tours',
 		'posts_per_page' => $posts_per_page,
 		'paged'          => $page,
 		'tax_query'      => [
 			[
-				'taxonomy'         => 'excursion_category',
+				'taxonomy'         => 'excursion',
 				'field'            => 'term_id',
 				'terms'            => $categories,
 				'include_children' => false,
@@ -51,45 +54,21 @@ function handle_filter_posts_request(WP_REST_Request $request) {
 		'meta_query' => ['relation' => 'AND'], // Гарантируем, что все условия применяются к одной записи
 	];
 
-	// Обработка фильтра по grade
-	if (!empty($grade)) {
-		$grade_values = json_decode($grade);
-		if (!empty($grade_values)) {
-			$grade_query = ['relation' => 'OR'];
-			foreach ($grade_values as $value) {
-				$grade_query[] = [
-					'key'     => 'grade',
-					'value'   => ':"' . $value . '"',
-					'compare' => 'LIKE',
-				];
-			}
-			$grade_query[] = ['key' => 'grade', 'compare' => 'NOT EXISTS'];
-			$grade_query[] = ['key' => 'grade', 'value' => '', 'compare' => 'IS NULL'];
-			$query_args['meta_query'][] = $grade_query;
-		}
-	}
-
-	// Обработка фильтра по duration
 	if (!empty($duration)) {
-		$duration_values = json_decode($duration);
-		if (!empty($duration_values)) {
-			$duration_query = ['relation' => 'OR'];
-			foreach ($duration_values as $value) {
-				$duration_query[] = [
-					'key'     => 'duration',
-					'value'   => $value,
-					'compare' => '=',
-				];
-			}
-			$duration_query[] = ['key' => 'duration', 'compare' => 'NOT EXISTS'];
-			$duration_query[] = ['key' => 'duration', 'value' => '', 'compare' => 'IS NULL'];
-			$query_args['meta_query'][] = $duration_query;
-		}
+		$duration_values = explode("-", $duration);
+		$min_duration = (int)$duration_values[0];  // Минимальное значение (например, 180 минут)
+		$max_duration = (int)$duration_values[1];
+
+		// Фильтрация для отсутствующих значений
+		$duration_query[] = ['key' => 'duration', 'compare' => 'NOT EXISTS'];
+
+		// Добавляем meta_query в аргументы запроса
+		$query_args['meta_query'][] = $duration_query;
 	}
 
-	// Обработка фильтра по price_range
-	if (!empty($price_ranges)) {
-		$price_values = json_decode($price_ranges);
+
+	if (!empty($price)) {
+		$price_values = json_decode($price);
 
 		if (!empty($price_values)) {
 			$price_queries = ['relation' => 'OR']; // Логическое объединение условий
@@ -128,7 +107,6 @@ function handle_filter_posts_request(WP_REST_Request $request) {
 			$query_args['meta_query'][] = $price_queries;
 		}
 	}
-
 	//запрос
 	$query = new WP_Query($query_args);
 	ob_start();
@@ -218,7 +196,7 @@ function handle_reviews_form(WP_REST_Request $request) {
 		);
 
 		$gallery = [];
-		
+
 		foreach ($uploaded_files as $file) {
 			if($file["name"] && $file["type"] && $file["tmp_name"]) {
 				$attachment = my_update_attachment($file, $post_id);
