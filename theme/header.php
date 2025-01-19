@@ -24,13 +24,7 @@
 
 <body <?php body_class(); ?>>
 
-<?php wp_body_open(); ?>
-
-<div id="page" class="flex flex-col min-h-screen">
-	<a href="#content" class="sr-only"><?php esc_html_e( 'Skip to content', 'tw' ); ?></a>
-
 	<?php get_template_part( 'template-parts/layout/header', 'content' ); ?>
-	<div id="content" class="container mx-auto flex-grow">
 		<?php /*
 		<div class="filter">
 			<?php if(is_home() || is_front_page() || is_tax('excursion')) : ?>

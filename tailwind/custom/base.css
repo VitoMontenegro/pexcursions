@@ -12,30 +12,60 @@
  * editor.
 */
 body {
-	@apply bg-background text-foreground font-sans;
+	@apply text-foreground font-['Inter'] text-[#373F41] bg-[#FFFFFF] text-[16px] leading-[1.2];
+}
+h1, h2, h3, h4, h5, h6 {
+	@apply font-bold tracking-tight
+}
+h1 {
+	@apply text-[27px] font-bold sm:text-[48px] leading-[1.04]
+}
+h2 {
+	@apply  text-[24px] leading-[1.2] lg:text-[31px] tracking-tight mt-10 mb-6
+}
+h3 {
+	@apply text-[18px] mt-0 mb-[14px] leading-[1.2] font-bold;
+}
+h2.big-title {
+	@apply mt-0 text-[24px] leading-[1.2] font-bold mb-[18px];
+}
+.big-title  h2{
+	@apply text-[23px] mt-0 mb-[14px] leading-[1.2] font-bold;
+}
+.big-title ul {
+	list-style: disc;
+	padding-left: 18px;
+}
+.big-title ul li {
+	margin-bottom: 6px;
+}
+.big-title ul li:last-child {
+	margin-bottom: 0;
+}
+.container {
+	@apply !max-w-[1252px] px-5 sm:px-[38px] lg:px-[18px] mx-auto;
+}
+table th, table td {
+	@apply py-2 border-2 border-white
+}
+table th {
+	@apply px-[14px]
+}
+table td {
+	@apply px-[14px] text-center
+}
+.p-bottom p {
+	margin-bottom: 8px;
+}
+.p-last p:last-child {
+	margin-bottom: 0;
 }
 
-#primary-menu {
-	@apply flex justify-between gap-7;
-}
-#primary-menu  .menu-item-has-children {
-	@apply  relative;
-}
-
-#primary-menu > li>a {
-	@apply font-bold;
-}
-
-#primary-menu  .sub-menu{
-	@apply hidden absolute bg-white	p-4 z-10 w-full border rounded-md;
-}
-#primary-menu  .sub-menu li{
-	@apply text-left;
-}
-#primary-menu  .menu-item-has-children:hover .sub-menu {
-	@apply block
-}
-
-#primary-menu  .sub-menu a {
-	@apply py-3 block;
+input::placeholder,
+textarea::placeholder {
+	opacity: 1;
+	color: #1A1A18;
+	font-style: normal;
+	font-weight: 500;
+	line-height: 1!important;
 }

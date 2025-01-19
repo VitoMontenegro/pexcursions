@@ -1,5 +1,5 @@
 <?php
-/*
+
 // Добавляем свой раздел блоков
 add_filter( 'block_categories_all', 'custom_block_category', 10, 2 );
 function custom_block_category( $default_categories, $post ) {
@@ -118,5 +118,5 @@ function my_acf_block_render_callback( $block ) {
             include( get_theme_file_path("/template-parts/block/content-{$slug}.php") );
     }
 }
-*/
+
 

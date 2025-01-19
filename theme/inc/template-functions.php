@@ -214,6 +214,13 @@ if( function_exists('acf_add_options_page') ) {
 			'menu_title'    => 'Настройки сайта',
 			'menu_slug'     => 'theme-general-settings',
 	));
+
+	acf_add_options_sub_page(array(
+			'page_title' 	=> 'Настройки экскурсий',
+			'menu_title'	=> 'Настройки экскурсий',
+			'menu_slug'     => 'tours_settings',
+			'parent_slug'	=> 'edit.php?post_type=tours'
+	));
 }
 
 # Добавляет SVG в список разрешенных для загрузки файлов.
@@ -260,68 +267,38 @@ add_filter( 'wp_check_filetype_and_ext', 'fix_svg_mime_type', 10, 5 );
 
 function register_custom_taxonomy() {
 	/**
-	 * Таксономия: Категория экскурсий.
+	 * Таксономия: Категория вопросов.
 	 */
-	register_taxonomy('excursion', 'tours', [
+	register_taxonomy('faqs_category', 'faqs', [
 			'hierarchical' => true, // Позволяет создавать подкатегории
 			'labels' => [
-					'name'              => 'Виды экскурсий',
-					'singular_name'     => 'Вид экскурсий',
-					'search_items'      => 'Поиск видов экскурсий',
-					'all_items'         => 'Все виды экскурсий',
-					'edit_item'         => 'Редактировать вид экскурсий',
-					'update_item'       => 'Обновить вид экскурсий',
-					'add_new_item'      => 'Добавить новый вид экскурсий',
-					'new_item_name'     => 'Новое имя вида экскурсий',
-					'menu_name'         => 'Виды экскурсий',
-					'view_item '        => 'Просмотр вида экскурсий',
-					'parent_item'       => 'Родительский вид экскурсий',
-					'parent_item_colon' => 'Родительский вид экскурсий:',
+					'name' => 'Категории вопросов',
+					'singular_name' => 'Категория вопросов',
+					"add_new_item" => "Добавить новую категорию",
+					'search_items'      => 'Найти категорию',
+					'all_items'         => 'Все категории',
+					'view_item '        => 'Смотреть категорию',
+					'parent_item'       => 'Родительская категория',
+					'parent_item_colon' => 'Родительская категория:',
+					'edit_item'         => 'Редактировать категорию',
+					'update_item'       => 'Обновить',
+					'menu_name'         => 'Категории вопросов',
 					'back_to_items'     => '← Назад к категории',
 			],
-			'show_ui'       => true,
-			'query_var'     => true,
-			"show_admin_column" => true,
 			'rewrite' => [
-					'slug' => 'excursion'
+					'slug' => 'faqs_category',
+					'hierarchical' => false,
+					'with_front' => false,
 			],
-			'show_in_rest' => true,
-			'rest_base' => 'excursion'
+			'public' => false, // Категория не доступна на фронтенде
+			'show_ui' => true, // Доступна в админ-панели
+			'show_in_rest' => true, // Можно редактировать через REST API
 	]);
 }
 add_action('init', 'register_custom_taxonomy');
 
 
 function register_custom_post_type() {
-	/**
-	 * Post Type: Экскурсии.
-	 */
-	register_post_type('tours', [
-			'labels' => [
-					'name' => 'Экскурсии',
-					'singular_name' => 'Экскурсии',
-					'add_new' => 'Добавить экскурсию',
-					'add_new_item' => 'Добавить новую экскурсию',
-					'edit_item' => 'Редактировать экскурсию',
-					'new_item' => 'Новая экскурсия',
-					'all_items' => 'Все экскурсии',
-					'view_item' => 'Просмотр экскурсии на сайте',
-					'search_items' => 'Искать экскурсию',
-					'not_found' =>  'Экскурсия не найдена.',
-					'not_found_in_trash' => 'В корзине нет экскурсий.',
-					'menu_name' => 'Экскурсии'
-			],
-			'public' => true,
-			'show_ui' => true,
-			'has_archive' => true,
-			'menu_position' => 20,
-			'supports' => array( 'title', 'editor', 'comments', 'author', 'thumbnail','custom-fields', 'revisions'),
-			'menu_icon' => 'dashicons-admin-site-alt',
-			'taxonomies'          => array( 'excursion' ),
-			'show_in_rest' => true,
-			'rest_base'             => 'tours',
-			'rest_controller_class' => 'WP_REST_Posts_Controller',
-	]);
 
 	/**
 	 * Post Type: Отзывы.
@@ -432,9 +409,134 @@ function register_custom_post_type() {
 			"supports" => [ "title", "editor", "thumbnail" ],
 			"show_in_graphql" => false
 	]);
+
+	/**
+	 * Post Type: Вопросы и ответы.
+	 */
+	register_post_type('faqs', [
+			'labels' => [
+					'name' => 'Вопросы и ответы',
+					'singular_name' => 'Вопросы и ответы',
+					"all_items" => "Все вопросы",
+					"add_new" => "Добавить вопрос",
+					"add_new_item" => "Добавить новый вопрос",
+					"edit_item" => "Редактировать вопросы",
+					"new_item" => "Новый вопрос",
+			],
+			"description" => "",
+			"public" => true,
+			"publicly_queryable" => false,
+			"show_ui" => true,
+			"delete_with_user" => false,
+			"show_in_rest" => true,
+			"rest_base" => "",
+			"rest_controller_class" => "WP_REST_Posts_Controller",
+			"has_archive" => false,
+			"show_in_menu" => true,
+			"show_in_nav_menus" => true,
+			"exclude_from_search" => false,
+			"capability_type" => "post",
+			"map_meta_cap" => true,
+			"hierarchical" => false,
+			'menu_icon' => 'dashicons-money',
+			"rewrite" => array( "slug" => "faqs", "with_front" => true ),
+			"query_var" => true,
+			"supports" => array( "title", "editor"),
+			'taxonomies' => ['faqs_category'], // Подключаем таксономию
+	]);
+	/**
+	 * Post Type: Экскурсоводы.
+	 */
+	register_post_type('gid', [
+			'labels' => [
+					'name' => 'Экскурсоводы',
+					'singular_name' => 'Экскурсоводы',
+					"all_items" => "Все гиды",
+					"add_new" => "Добавить гида",
+					"add_new_item" => "Добавить гида",
+					"edit_item" => "Редактировать гида",
+					"new_item" => "Новый гид",
+			],
+			"description" => "",
+			"public" => true,
+			"publicly_queryable" => false,
+			"show_ui" => true,
+			"delete_with_user" => false,
+			"show_in_rest" => true,
+			"rest_base" => "",
+			"rest_controller_class" => "WP_REST_Posts_Controller",
+			"has_archive" => false,
+			"show_in_menu" => true,
+			"show_in_nav_menus" => true,
+			"exclude_from_search" => false,
+			"capability_type" => "post",
+			"map_meta_cap" => true,
+			"hierarchical" => false,
+			'menu_icon' => 'dashicons-businessman',
+			"rewrite" => array( "slug" => "gid", "with_front" => true ),
+			"query_var" => true,
+			"supports" => array( "title", "editor"),
+	]);
 }
 add_action('init', 'register_custom_post_type');
 
+
+function get_nested_categories_by_parent($parent_id, $taxonomy = 'excursion') {
+	$terms = get_terms([
+			'taxonomy' => $taxonomy,
+			'hide_empty' => false,
+			'parent' => $parent_id,
+	]);
+
+	if (empty($terms) || is_wp_error($terms)) {
+		return [];
+	}
+	$current_term = get_queried_object();
+	$categories = [];
+	foreach ($terms as $term) {
+
+		$current = ($current_term && $current_term->term_id ==  $term->term_id);
+		$categories[] = [
+				'id' => $term->term_id,
+				'name' => $term->name,
+				'slug' => $term->slug,
+				'current' => $current,
+				'link' => get_term_link($term),
+				'children' => get_nested_categories_by_parent($term->term_id, $taxonomy)
+		];
+	}
+
+	return $categories;
+}
+
+
+function get_all_descendant_categories($parent_id, $taxonomy) {
+	$categories = [$parent_id];
+	$terms = get_terms([
+			'taxonomy' => $taxonomy,
+			'hide_empty' => false,
+			'parent' => $parent_id,
+	]);
+
+	foreach ($terms as $term) {
+		$categories = array_merge($categories, get_all_descendant_categories($term->term_id, $taxonomy));
+	}
+
+	return $categories;
+}
+
+function get_top_parent_category($term_id, $taxonomy = 'excursion') {
+	$term = get_term($term_id, $taxonomy);
+	if (!$term || is_wp_error($term)) {
+		return null;
+	}
+
+	while ($term->parent != 0) {
+		$term = get_term($term->parent, $taxonomy);
+	}
+
+	return $term;
+}
 
 // скрыть в меню от пользоватля с ролью 'author'
 function tw_remove_menu_items() {
@@ -563,3 +665,134 @@ function my_custom_template($id, $part) {
 	set_query_var('custom_id', $id);
 	get_template_part($part);
 }
+
+function get_cost($fields) {
+
+	$cost = null;
+	$cost_sale = null;
+
+
+
+	if (isset($fields['p_deti_inostrancy']) && $fields['p_deti_inostrancy']) {
+		$cost = $fields['p_deti_inostrancy'];
+	}
+	if (isset($fields['p_deti_inostrancy_sale']) && $fields['p_deti_inostrancy_sale']) {
+		$cost_sale = $fields['p_deti_inostrancy_sale'];
+	}
+	if (isset($fields['p_studenty_inostrancy']) && $fields['p_studenty_inostrancy']) {
+		$cost = $fields['p_studenty_inostrancy'];
+	}
+	if (isset($fields['p_studenty_inostrancy_sale']) && $fields['p_studenty_inostrancy_sale']) {
+		$cost_sale = $fields['p_studenty_inostrancy_sale'];
+	}
+	if (isset($fields['p_vzroslie_inostrancy']) && $fields['p_vzroslie_inostrancy']) {
+		$cost = $fields['p_vzroslie_inostrancy'];
+	}
+	if (isset($fields['p_vzroslie_inostrancy_sale']) && $fields['p_vzroslie_inostrancy_sale']) {
+		$cost_sale = $fields['p_vzroslie_inostrancy_sale'];
+	}
+	if (isset($fields['p_pensionery']) && $fields['p_pensionery']) {
+		$cost = $fields['p_pensionery'];
+	}
+	if (isset($fields['p_pensionery_sale']) && $fields['p_pensionery_sale']) {
+		$cost_sale = $fields['p_pensionery_sale'];
+	}
+	if (isset($fields['p_vzroslie']) && $fields['p_vzroslie']) {
+		$cost = $fields['p_vzroslie'];
+	}
+	if (isset($fields['p_vzroslie_sale']) && $fields['p_vzroslie_sale']) {
+		$cost_sale = $fields['p_vzroslie_sale'];
+	}
+	if (isset($fields['p_studenty']) && $fields['p_studenty']) {
+		$cost = $fields['p_studenty'];
+	}
+	if (isset($fields['p_studenty_sale']) && $fields['p_studenty_sale']) {
+		$cost_sale = $fields['p_studenty_sale'];
+	}
+	if (isset($fields['p_shkolniki']) && $fields['p_shkolniki']) {
+		$cost = $fields['p_shkolniki'];
+	}
+	if (isset($fields['p_shkolniki_sale']) && $fields['p_shkolniki_sale']) {
+		$cost_sale = $fields['p_shkolniki_sale'];
+	}
+
+	if (isset($fields['p_doshkolniki']) && $fields['p_doshkolniki']) {
+		$cost = $fields['p_doshkolniki'];
+	}
+	if (isset($fields['p_doshkolnik_sale']) && $fields['p_doshkolnik_sale']) {
+		$cost_sale = $fields['p_doshkolnik_sale'];
+	}
+
+
+	return ['cost' =>$cost, 'cost_sale'=>$cost_sale];
+}
+function custom_get_params() {
+	if (empty($_GET)) {
+		return false;
+	}
+
+	$output = [];
+	foreach ($_GET as $key => $value) {
+		// Очистка данных
+		$safe_key = sanitize_text_field($key);
+		$decoded_value = urldecode($value);
+		$decoded_value = stripslashes($decoded_value); // Убираем слэши
+		// Проверяем JSON
+		$decoded_json = json_decode($decoded_value, true);
+		if (json_last_error() === JSON_ERROR_NONE) {
+			$output[$safe_key] = $decoded_json;
+		} else {
+			$output[$safe_key] = $decoded_value;
+		}
+	}
+
+	return $output;
+}
+
+
+
+
+
+
+function convertTime($timeString) {
+	// Убираем пробелы по краям
+	$timeString = trim($timeString);
+
+	// Если строка начинается с "от", извлекаем значение после
+	if (strpos($timeString, 'от') === 0) {
+		$timeString = trim(substr($timeString, 2)); // Убираем "от" и пробел
+	}
+
+	// Если строка содержит ":", обрабатываем как время с минутами
+	if (strpos($timeString, ':') !== false) {
+		list($hours, $minutes) = explode(':', $timeString);
+		$minutes = (int) $minutes;
+		$hours = (int) $hours;
+
+		// Если минут больше 30, округляем в большую сторону
+		if ($minutes >= 30) {
+			$hours++;
+		}
+		return $hours;
+	}
+
+	// Если строка содержит ",", меняем запятую на точку и округляем
+	if (strpos($timeString, ',') !== false) {
+		$timeString = str_replace(',', '.', $timeString);
+		$timeString = round($timeString);  // Округляем до целого
+	}
+
+	// Если строка содержит диапазон, берем последнее значение
+	if (strpos($timeString, ' - ') !== false) {
+		$timeString = explode(' - ', $timeString)[1];
+	}
+
+	// Если строка содержит "часов" или "час", убираем это слово
+	$timeString = preg_replace('/\s*часов?\s*/', '', $timeString);
+
+	// Преобразуем строку в целое число
+	return (int) $timeString;
+}
+
+
+
