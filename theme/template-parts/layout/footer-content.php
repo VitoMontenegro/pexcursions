@@ -156,7 +156,7 @@ $options = get_fields( 'option');
 		</div>
 
 		<div class="mt-12 sm:mt-[80px] flex flex-col md:flex-row gap-4 text-[#898582] text-[16px] font-normal mb-[64px]">
-			<iframe src="https://yandex.ru/sprav/widget/rating-badge/64817349525?type=rating" width="150" height="50" frameborder="0"></iframe>
+			<iframe src="https://yandex.ru/sprav/widget/rating-badge/92802349227?type=rating&theme=dark" width="150" height="50" frameborder="0"></iframe>
 			<div class="flex flex-col gap-2 text-[12px] sm:text-[16px]">
 				<div class=""><a class="custom-underline" href="">Договор-оферта</a> и <a class="custom-underline" href="">Политика конфиденциальности</a></div>
 				<div class="">© ООО «Комфорт Сервис» – 2024 год. Индивидуальные и групповые экскурсии г. Санкт-Петербург</div>

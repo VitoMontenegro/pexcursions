@@ -1,61 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f9b3546d-cc3a-42f3-ba14-a25f522333a8" name="Changes" comment="add project">
-      <change afterPath="$PROJECT_DIR$/theme/css/admin-styles.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/css/swiper-bundle.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-Black.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-BlackItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-BoldItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-ExtraBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-ExtraBoldItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-ExtraLight.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-ExtraLightItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-Italic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-Light.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-LightItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-Medium.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-MediumItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-SemiBold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-SemiBoldItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-Thin.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/fonts/Inter/Inter_18pt-ThinItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/img/banner.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/img/banner.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/img/banner_sm.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/img/charch.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/img/petr.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/template-parts/layout/subheader-content.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/php.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
+    <list default="true" id="f9b3546d-cc3a-42f3-ba14-a25f522333a8" name="Changes" comment="add front page">
+      <change afterPath="$PROJECT_DIR$/tailwind/custom/fancybox.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/theme/contacts.php" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/theme/js/fancybox.umd.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javascript/script.js" beforeDir="false" afterPath="$PROJECT_DIR$/javascript/script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tailwind/custom/base.css" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind/custom/base.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tailwind/custom/components/components.css" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind/custom/components/components.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind/custom/fonts.css" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind/custom/fonts.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind/tailwind-typography.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind/tailwind-typography.config.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/css/slick.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/footer.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/footer.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tailwind/custom/utilities.css" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind/custom/utilities.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tailwind/tailwind.css" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind/tailwind.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/front-page.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/front-page.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/functions.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/functions.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/header.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/header.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/inc/api-functions.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/inc/api-functions.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/inc/gutenberg.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/inc/gutenberg.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/inc/template-functions.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/inc/template-functions.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/theme/js/block-editor.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/theme/js/block-editor.min.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/js/script.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/theme/js/script.min.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/js/slick.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/page-wish.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/page-wish.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/rewiews.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/rewiews.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/sidebar.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/sidebar.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/single-tours.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/single-tours.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/theme/style-editor-extra.css" beforeDir="false" afterPath="$PROJECT_DIR$/theme/style-editor-extra.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/style-editor.css" beforeDir="false" afterPath="$PROJECT_DIR$/theme/style-editor.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/theme/style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/taxonomy-excursion.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/taxonomy-excursion.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/template-parts/content/content-loop-excursion.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/template-parts/content/content-loop-excursion.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/template-parts/content/content-reviews.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/template-parts/content/content-reviews.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/template-parts/layout/breadcrumbs-content.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/template-parts/layout/breadcrumbs-content.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/theme/template-parts/layout/footer-content.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/template-parts/layout/footer-content.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/theme/template-parts/layout/header-content.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/template-parts/layout/header-content.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/theme/template-parts/layout/subheader-content.php" beforeDir="false" afterPath="$PROJECT_DIR$/theme/template-parts/layout/subheader-content.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -83,7 +55,7 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/OSPanelNew/domains/pexcursions.local/wp-content/themes/tw/theme/template-parts/content&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/OSPanelNew/domains/pexcursions.local/wp-content/themes/tw/theme&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
@@ -91,10 +63,11 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\theme" />
+      <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\tailwind\custom" />
+      <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\theme\js" />
       <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\theme\template-parts\content" />
       <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\theme\img" />
-      <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\theme\template-parts\layout" />
-      <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\theme\fonts" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\OSPanelNew\domains\pexcursions.local\wp-content\themes\tw\theme\js" />
@@ -124,7 +97,12 @@
       <workItem from="1736592623927" duration="10067000" />
       <workItem from="1737178592376" duration="38826000" />
       <workItem from="1737260986774" duration="7822000" />
-      <workItem from="1737269847147" duration="8344000" />
+      <workItem from="1737269847147" duration="10110000" />
+      <workItem from="1737524292974" duration="3361000" />
+      <workItem from="1737652507680" duration="28037000" />
+      <workItem from="1737714794014" duration="19299000" />
+      <workItem from="1737789269697" duration="9935000" />
+      <workItem from="1737867241829" duration="12260000" />
     </task>
     <task id="LOCAL-00001" summary="add project">
       <created>1732598258640</created>
@@ -133,7 +111,14 @@
       <option name="project" value="LOCAL" />
       <updated>1732598258640</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="add front page">
+      <created>1737293204776</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1737293204776</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -152,6 +137,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add project" />
-    <option name="LAST_COMMIT_MESSAGE" value="add project" />
+    <MESSAGE value="add front page" />
+    <option name="LAST_COMMIT_MESSAGE" value="add front page" />
   </component>
 </project>

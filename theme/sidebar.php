@@ -14,9 +14,15 @@ $queryParams = $_SERVER['QUERY_STRING'] ? '?' .$_SERVER['QUERY_STRING'] : '';
 
 
 ?>
-<aside id="sidebar-menu" class="no-scrollbar z-10 top-0 fixed lg:sticky lg:top-0 lg:max-h-[1040px] w-full max-w-[96vw] h-full transform -translate-x-[1700px] transition-transform duration-300 ease-in-out lg:relative lg:-translate-x-0 filter lg:w-[322px] min-w-[322px] md:mb-10 shadows_custom border border-1 border-[#E5E7EB] rounded-[6px] overflow-auto bg-white left-[2vw] top-[2vw]">
-
-	<div class="p-5 rounded-lg h-screen lg:h-full">
+<aside id="sidebar-menu" class="no-scrollbar transition-all duration-300 ease-in-out z-[9999999] lg:z-10 top-0 fixed lg:sticky top-3 lg:top-[-400px] w-full max-w-[96vw] h-full transform lg:relative filter lg:w-[322px] min-w-[322px] overflow-auto bg-white left-[2vw] lg:translate-x-0">
+	<div class="p-5 rounded-lg lg:h-full border border-1 border-[#E5E7EB] shadows_custom rounded-[6px]">
+		<div class="flex lg:hidden justify-end relative -top-[10px] -right-1 bg-white relative">
+			<button class="close-filter-btn">
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+					<path d="M12 20L16 16M16 16L19.6667 12.3333M16 16L12 12M16 16L20 20M29 16C29 23.1797 23.1797 29 16 29C8.8203 29 3 23.1797 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16Z" stroke="#9CA3AF" stroke-width="2.67" stroke-linecap="round" stroke-linejoin="round"></path>
+				</svg>
+			</button>
+		</div>
 		<form class="search-form flex px-5 h-10 bg-white items-center rounded-[6px] border border-[#000000] w-full  flex items-center mb-0 text-[16px] mb-[24px]">
 			<button type="submit" class="me-3" aria-label="Поиск">
 				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
@@ -67,27 +73,27 @@ $queryParams = $_SERVER['QUERY_STRING'] ? '?' .$_SERVER['QUERY_STRING'] : '';
 				</div>
 				<div class="flex gap-2 flex-wrap radio-group">
 					<label class="flex items-center cursor-pointer relative">
-						<input type="checkbox" name="duration" value="0-2" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('0-2', $get_params["duration"])) echo 'checked'; ?>>
+						<input type="checkbox" name="duration" value="0-4" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('0-2', $get_params["duration"])) echo 'checked'; ?>>
 						<span class="ps-4 pe-4 h-[32px] flex items-center border rounded-md bg-[#E6E9EC]  peer-checked:bg-[#52A6B2] peer-checked:text-white transition font-medium">
-							<span>1-2 часа</span>
+							<span>2,5-4 часа</span>
 						</span>
 					</label>
 					<label class="flex items-center cursor-pointer relative">
-						<input type="checkbox" name="duration" value="2-3" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('2-3', $get_params["duration"])) echo 'checked'; ?>>
+						<input type="checkbox" name="duration" value="5-6" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('2-3', $get_params["duration"])) echo 'checked'; ?>>
 						<span class="ps-4 pe-4 h-[32px] flex items-center border rounded-md bg-[#E6E9EC]  peer-checked:bg-[#52A6B2] peer-checked:text-white transition font-medium">
-							<span>2-3 часа</span>
+							<span>5-6 часов</span>
 						</span>
 					</label>
 					<label class="flex items-center cursor-pointer relative">
-						<input type="checkbox" name="duration" value="4-5" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('4-5', $get_params["duration"])) echo 'checked'; ?>>
+						<input type="checkbox" name="duration" value="7-8" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('4-5', $get_params["duration"])) echo 'checked'; ?>>
 						<span class="ps-4 pe-4 h-[32px] flex items-center border rounded-md bg-[#E6E9EC]  peer-checked:bg-[#52A6B2] peer-checked:text-white transition font-medium">
-							<span>4-5 часов</span>
+							<span>7-8 часов</span>
 						</span>
 					</label>
 					<label class="flex items-center cursor-pointer relative">
-						<input type="checkbox" name="duration" value="6-20" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('6-20', $get_params["duration"])) echo 'checked'; ?>>
+						<input type="checkbox" name="duration" value="9-20" class="hidden peer" <?php  if (!empty($get_params["duration"]) && in_array('6-20', $get_params["duration"])) echo 'checked'; ?>>
 						<span class="ps-4 pe-4 h-[32px] flex items-center border rounded-md bg-[#E6E9EC]  peer-checked:bg-[#52A6B2] peer-checked:text-white transition font-medium">
-							<span>6-7 часов</span>
+							<span>9-16 часов</span>
 						</span>
 					</label>
 				</div>
@@ -136,7 +142,18 @@ $queryParams = $_SERVER['QUERY_STRING'] ? '?' .$_SERVER['QUERY_STRING'] : '';
 
 		<div class="button-group flex w-full gap-3 font-medium">
 			<button type="button" class="close-filter-btn button-cancel h-10 w-full flex items-center justify-center border border-neutral-300 rounded-[6px]" id="cancelBtn">Отмена</button>
-			<button type="button" class="button-ok h-10 w-full flex items-center justify-center border border-[#52A6B2] bg-[#52A6B2] rounded-[6px] text-white" id="okBtn">Ок</button>
+			<button type="button" class="button-ok h-10 w-full flex items-center justify-center border border-[#52A6B2] bg-[#52A6B2] hover:bg-[#44909B] rounded-[6px] text-white" id="okBtn">Ок</button>
 		</div>
+	</div>
+
+	<div class="w-full px-[42px] py-[15px] bg-white border-2 border-[#d6bd7f] justify-center items-center gap-3.5 flex mt-6">
+		<img src="<?php echo get_stylesheet_directory_uri(); ?>/img/logo-sigur.svg" alt="" class="object-cover ">
+		<div>
+			<div class="text-[14px] font-bold leading-[16px] mb-[4px]">Мы внесены в единый реестр туроператоров<br/></div>
+			<div class="text-gray-900 text-[12px] font-normal leading-[22px]">№<?php echo $options['reestr']; ?> ИНН <?php echo $options['inn']; ?></div>
+		</div>
+	</div>
+	<div class="w-full mt-6">
+		<iframe src="https://yandex.ru/sprav/widget/rating-badge/92802349227?type=rating" width="150" height="50" frameborder="0"></iframe>
 	</div>
 </aside>

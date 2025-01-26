@@ -9,6 +9,26 @@
  * https://esbuild.github.io/
  */
 
+document.addEventListener('DOMContentLoaded', () => {
+	const sidebar = document.getElementById('sidebar-menu');
+	let lastScrollY = window.scrollY;
+	if (sidebar ) {
+		window.addEventListener('scroll', () => {
+			if (window.scrollY > lastScrollY) {
+				// Скролл вниз
+				sidebar.classList.remove('lg:top-[40px]');
+				sidebar.classList.add('lg:top-[-400px]');
+			} else {
+				// Скролл вверх
+				sidebar.classList.remove('lg:top-[-400px]');
+				sidebar.classList.add('lg:top-[40px]');
+			}
+			lastScrollY = window.scrollY;
+		});
+
+	}
+});
+
 document.addEventListener('DOMContentLoaded', function() {
 
 
@@ -48,6 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	const sidebarToggle = document.getElementById('sidebar-toggle');
 	const sidebarMenu = document.getElementById('sidebar-menu');
 	if (sidebarToggle && sidebarMenu) {
+
+
 		sidebarToggle.addEventListener('click', (event) => {
 			event.stopPropagation(); // предотвращаем всплытие события, чтобы не закрывать меню сразу после его открытия
 
@@ -101,7 +123,29 @@ document.addEventListener('DOMContentLoaded', function() {
 		document.querySelector('.rev-button-prev').classList.remove('swiper-button-disabled');
 		document.querySelector('.rev-button-next').classList.remove('swiper-button-disabled');
 	});
+	swiper_rev.init();
 
+	const swiper_similar = new Swiper('.swiper_similar', {
+		slidesPerView: 1.2, // Показывает два с половиной слайда
+		spaceBetween: 20,   // Отступы между слайдами
+		centeredSlides: false, // Убирает центровку активного слайда
+		loop: true,          // Зацикливает слайды
+		navigation: {
+			nextEl: '.similar-button-next',
+			prevEl: '.similar-button-prev',
+		},
+		breakpoints: {
+			490: {
+				slidesPerView: 3, // Показывает два с половиной слайда
+				spaceBetween: 32,
+			}
+		},
+	});
+	// Обновление кнопок при инициализации
+	swiper_rev.on('init', () => {
+		document.querySelector('.similar-button-prev').classList.remove('swiper-button-disabled');
+		document.querySelector('.similar-button-next').classList.remove('swiper-button-disabled');
+	});
 	swiper_rev.init();
 
 	const swiper_gids = new Swiper('.swiper_gids', {
@@ -128,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	swiper_gids.init();
 
-	const swiper = new Swiper('.swiper', {
+	const swiper = new Swiper('.swiper_custom', {
 		slidesPerView: 1.2, // Показывает два с половиной слайда
 		spaceBetween: 20,   // Отступы между слайдами
 		centeredSlides: false, // Убирает центровку активного слайда
@@ -145,11 +189,100 @@ document.addEventListener('DOMContentLoaded', function() {
 		},
 	});
 
-	// Обновление кнопок при инициализации
-	swiper_gids.on('init', () => {
-		document.querySelector('.swiper-button-prev').classList.remove('swiper-button-disabled');
-		document.querySelector('.swiper-button-next').classList.remove('swiper-button-disabled');
-	});
+
+	const swiperTour = document.querySelectorAll('.swiper_tour');
+	if (swiperTour.length) {
+		const swiper = new Swiper(".mySwiper", {
+			spaceBetween: 8,
+			slidesPerView: 3,
+			freeMode: true,
+			watchSlidesProgress: true,
+			breakpoints: {
+				640: {
+					spaceBetween: 20,
+					slidesPerView: 3,
+				},
+			},
+		});
+
+		const swiper2 = new Swiper(".mySwiper2", {
+			spaceBetween: 8,
+			navigation: {
+				nextEl: ".swiper-button-next",
+				prevEl: ".swiper-button-prev",
+			},
+			thumbs: {
+				swiper: swiper,
+			},
+		});
+
+		const swiperSlides = document.querySelectorAll('.mySwiper2 .swiper-slide img');
+
+		// Для всех слайдов в Swiper добавляем ссылку с атрибутами для Fancybox
+		swiperSlides.forEach(slide => {
+			const mediaSrc = slide.getAttribute('src');
+			const mediaAlt = slide.getAttribute('alt');
+			const videoId = slide.getAttribute('data-video-id');
+			const videoType = slide.getAttribute('data-video-type');
+
+			// Если это изображение
+			if (!videoId) {
+				slide.setAttribute('data-fancybox', 'gallery');  // Группа галереи
+				slide.setAttribute('data-src', mediaSrc);  // Ссылка на изображение
+				slide.setAttribute('data-caption', mediaAlt);  // Подпись изображения
+			} else {
+				// Если это видео, создаем ссылку на видео
+				let videoUrl = '';
+				if (videoType === 'youtube') {
+					videoUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+				} else if (videoType === 'rutube') {
+					videoUrl = `https://rutube.ru/play/embed/${videoId}?autoplay=1`;
+				} else if (videoType === 'dzen') {
+					videoUrl = videoId;
+				}
+
+				slide.setAttribute('data-fancybox', 'gallery');  // Группа галереи
+				slide.setAttribute('data-src', videoUrl);  // Ссылка на видео
+				slide.setAttribute('data-caption', mediaAlt);  // Подпись видео
+			}
+		});
+
+		Fancybox.bind('[data-fancybox="gallery"]', {
+			infinite: true,
+			groupAll: true,
+			caption: function (fancybox, carousel, slide) {
+				return slide.alt;
+			},
+			// Можно добавить другие опции Fancybox
+		});
+	}
+
+
+	const swiperBlock = document.querySelectorAll('.swiper_block');
+	if(swiperBlock) {
+		const newSwiperBlock = new Swiper(".swiperBlock", {
+			slidesPerView: 1,
+			spaceBetween: 16,
+			navigation: {
+				nextEl: ".swiper-button-next",
+				prevEl: ".swiper-button-prev",
+			},
+			breakpoints: {
+				490: {
+					slidesPerView: 2,
+					spaceBetween: 16,
+				},
+				790: {
+					slidesPerView: 3,
+					spaceBetween: 24,
+				},
+				1023: {
+					slidesPerView: 5,
+					spaceBetween: 24,
+				}
+			},
+		});
+	}
 
 	// Сохраняем экземпляр Flatpickr
 
@@ -214,19 +347,43 @@ document.addEventListener('DOMContentLoaded', function() {
 				dateFormat: "Y-m-d",
 				locale: "ru", // Указываем код языка
 				defaultDate: selectedDates, // Устанавливаем выбранные даты
-				onChange: function (selectedDates, dateStr) {
-					// Обработка изменения даты
-					const selectedDatesRange = {
-						dates: selectedDates,
-						range: dateStr
-					};
-
-					console.log("Selected range:", selectedDatesRange);
+				disable: [
+					function (date) {
+						// Блокируем все даты, кроме defaultDate и диапазона от minDate
+						const isDefaultDate = selectedDates.some(
+							(selected) => date.toISOString().split("T")[0] === selected
+						);
+						const isInRange = date >= new Date(); // Дата должна быть >= minDate (today)
+						return !isDefaultDate && !isInRange;
+					}
+				],
+				onChange: function () {
+					// Блокируем изменение выделенных дат
+					calendarInstance.setDate(selectedDates, false); // Сбрасываем выбор на defaultDate
 				}
 			});
 		});
 	}
 	startCalendars();
+
+	document.addEventListener('click', function (event) {
+		const cancel = event.target;
+
+		if (cancel.id === 'cancelBtnFilter') {
+			selectedDatesRange = null; // Сбрасываем выбранные даты
+			calendarInstance.clear();  // Используем метод .clear() на экземпляре Flatpickr
+			clearForm();
+			removeGetParams();
+			document.querySelector('input[name="dateForm"]').value = null;
+			document.querySelector('input[name="dateForm"]').dispatchEvent(new Event('change', { bubbles: true }))
+
+			document.querySelectorAll('#cat_sidebar .flex.items-center a').forEach((link) => {
+				const url = window.location.origin + window.location.pathname;
+				link.href = url.toString();
+			});
+		}
+	});
+
 
 	// Функция для открытия/закрытия dropdown
 	document.addEventListener('click', function (event) {
@@ -328,16 +485,17 @@ document.addEventListener('DOMContentLoaded', function() {
 			fetch('/wp-json/my_namespace/v1/filter-posts/?' + params.toString())
 				.then(response => {
 					if (!response.ok) {
-						throw new Error('Failed to fetch the template.');
+						throw new Error('Failed to fetch the template.'); // Проверяем, что статус ответа 200–299
 					}
-					return response.text();
+					return response.json(); // Парсим JSON-ответ
 				})
-				.then(html => {
-					document.getElementById('tours').innerHTML = html;
+				.then(data  => {
+					console.log(data.data)
+					document.getElementById('tours').innerHTML = data.data.html;
 					document.getElementById('card_link').scrollIntoView({ block: "start", behavior: "smooth" });
 					startCalendars();
 					//adjustCardLayout();
-					//adjustWishBtn();
+					adjustWishBtn();
 					//sortExcursion();
 				})
 				.catch(error => console.error('Error loading posts:', error));
@@ -690,30 +848,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 	//wishlist
-	const wishButtons = document.querySelectorAll('.wish-btn');
-	if (wishButtons) {
-		let currentProducts = getCookie('product');
-		try {
-			currentProducts = currentProducts ? JSON.parse(currentProducts) : [];
-		} catch (e) {
-			console.error("Error parsing cookies:", e);
-			currentProducts = []; // Сбрасываем в пустой массив при ошибке
-		}
+	function adjustWishBtn() {
+		const devContainer = document.getElementById('response');
 
-		wishButtons.forEach(button => {
-			const productId = button.getAttribute('data-wp-id');
-			// Добавляем класс active на кнопки, которые соответствуют продуктам в куки
-			if (currentProducts.includes(productId)) {
-				button.classList.add('active');
-			}
+		if (!devContainer) return;  // Если контейнера нет, выходим
 
-		});
-	}
-	const devContainer = document.getElementById('response');
-	if (devContainer) {
+		const wishButtons = devContainer.querySelectorAll('.wish-btn');
+		updateWishBtns(wishButtons);
+
+		if (devContainer.dataset.initialized) return;
+
+		devContainer.dataset.initialized = true;
 		devContainer.addEventListener('click', (event) => {
 			const button = event.target.closest('.wish-btn');
 			if (!button) return; // Если клик не по wish-btn, выходим
+			handleWishButtonClick(button);
+		});
+
+		function updateWishBtns(buttons) {
+			let currentProducts = getCookie('product');
+			try {
+				currentProducts = currentProducts ? JSON.parse(currentProducts) : [];
+			} catch (e) {
+				console.error("Error parsing cookies:", e);
+				currentProducts = []; // Сбрасываем в пустой массив при ошибке
+			}
+
+			buttons.forEach(button => {
+				const productId = button.getAttribute('data-wp-id');
+				// Добавляем класс active на кнопки, которые соответствуют продуктам в куки
+				if (currentProducts.includes(productId)) {
+					button.classList.add('active');
+				}
+			});
+		}
+
+		function handleWishButtonClick(button) {
 			let currentProducts = getCookie('product');
 			try {
 				currentProducts = currentProducts ? JSON.parse(currentProducts) : [];
@@ -735,10 +905,13 @@ document.addEventListener('DOMContentLoaded', function() {
 				button.classList.add('active');
 			}
 
+
 			// Сохраняем обновленные куки
 			setCookie('product', JSON.stringify(currentProducts), 7);
-		});
+			updateProductCount('product', '#product-count span', '#product-count div');
+		}
 	}
+	adjustWishBtn();
 
 
 	// Функция получения куки

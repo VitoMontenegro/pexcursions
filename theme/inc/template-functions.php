@@ -594,11 +594,21 @@ function getYoutubeEmbedUrl($url) {
 	return (isset($matches[1])) ? $matches[1] : false;
 }
 
-function getDzenSrc($url) {
+
+function getDzenEmbedUrl($url) {
+	if(!$url) return false;
+
 	$pattern = '/(https.*)(")/U';
 	preg_match($pattern, $url, $matches);
 
 	return (isset($matches[1])) ? $matches[1] : false;
+}
+function getRuTubeEmbedUrl($url) {
+	// Регулярное выражение для извлечения идентификатора видео
+	if (preg_match('/\/video\/([a-f0-9]{32})/', $url, $matches)) {
+		return $matches[1]; // Возвращаем найденный идентификатор
+	}
+	return null; // Если идентификатор не найден, возвращаем null
 }
 
 function correctTime($time){
@@ -719,8 +729,8 @@ function get_cost($fields) {
 	if (isset($fields['p_doshkolniki']) && $fields['p_doshkolniki']) {
 		$cost = $fields['p_doshkolniki'];
 	}
-	if (isset($fields['p_doshkolnik_sale']) && $fields['p_doshkolnik_sale']) {
-		$cost_sale = $fields['p_doshkolnik_sale'];
+	if (isset($fields['p_doshkolniki_sale']) && $fields['p_doshkolniki_sale']) {
+		$cost_sale = $fields['p_doshkolniki_sale'];
 	}
 
 
@@ -796,3 +806,109 @@ function convertTime($timeString) {
 
 
 
+
+add_shortcode( 'min_price', 'min_price_shortcode' );
+function min_price_shortcode($atts) {
+	ob_start();
+
+	$atts = shortcode_atts(array(
+			'slug' => '',
+	), $atts);
+
+
+
+	if (is_front_page()) {
+		$terms_items = 'ekskursii-peterburg';
+	} else {
+		$terms_items = get_queried_object()->slug;
+	}
+	$term = ($atts['slug'] !=='')  ? $atts['slug'] : $terms_items;
+
+	$items = get_posts( array(
+		'numberposts' => -1,
+		'post_type' => 'tours',
+		'tax_query' => array(                                  // элемент (термин) таксономии
+			array(
+				'taxonomy' => 'excursion',         // таксономия
+				'field' => 'slug',
+				'terms'    => $term // термин
+			)
+		),
+	) );
+
+	wp_reset_postdata(); // сброс
+
+
+	$items_prices = [];
+	foreach ($items as $item) {
+		$fields = get_fields($item->ID);
+
+		if ($fields['p_doshkolniki_sale']) {
+			$m=(int)$fields['p_doshkolniki_sale'];
+		} elseif ( $fields['p_doshkolniki'] ) {
+			$m=(int)$fields['p_doshkolniki'];
+		} elseif ($fields['p_shkolniki_sale']){
+			$m=(int)$fields['p_shkolniki_sale'];
+		}  else {
+			$m=(int) $fields['p_shkolniki'];
+		}
+		if ($m<1) continue;
+		$items_prices[] = (int) $m;
+	}
+
+	if (count($items_prices)>0) {
+		$min_price = min($items_prices);
+	} else {
+		$min_price = 855;
+	}
+
+	echo $min_price;
+	return  ob_get_clean();
+}
+
+
+function get_min_price($slug) {
+
+
+
+
+	$items = get_posts( array(
+			'numberposts' => -1,
+			'post_type' => 'tours',
+			'tax_query' => array(                                  // элемент (термин) таксономии
+					array(
+							'taxonomy' => 'excursion',         // таксономия
+							'field' => 'slug',
+							'terms'    => $slug // термин
+					)
+			),
+	) );
+
+	wp_reset_postdata(); // сброс
+
+
+	$items_prices = [];
+	foreach ($items as $item) {
+		$fields = get_fields($item->ID);
+
+		if ($fields['p_doshkolniki_sale']) {
+			$m=(int)$fields['p_doshkolniki_sale'];
+		} elseif ( $fields['p_doshkolniki'] ) {
+			$m=(int)$fields['p_doshkolniki'];
+		} elseif ($fields['p_shkolniki_sale']){
+			$m=(int)$fields['p_shkolniki_sale'];
+		}  else {
+			$m=(int) $fields['p_shkolniki'];
+		}
+		if ($m<1) continue;
+		$items_prices[] = $m;
+	}
+
+	if (count($items_prices)>0) {
+		$min_price = min($items_prices);
+	} else {
+		$min_price = 855;
+	}
+
+	return  $min_price;
+}

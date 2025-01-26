@@ -5,7 +5,7 @@ var_dump(is_tax()); //категория экскурсии*/
 $fields = get_fields();
 $i=0
 ?>
-<section class="breadcrumbs mt-1.5 mb-3 lg:mt-6 lg:mb-6">
+<section class="breadcrumbs mt-1.5 mb-3 lg:mt-5 lg:mb-5 text-[12px]">
 	<div class="container">
 		<ol itemscope itemtype="http://schema.org/BreadcrumbList" class="flex flex-wrap gap-x-1 text-[#999]">
 			<?php if(is_category()): ?>
@@ -61,7 +61,7 @@ $i=0
 				</li>
 				<li class="inline">-</li>
 				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="inline">
-					<span itemprop="name" class="text-[#393488]"><?php echo get_the_title(); ?></span>
+					<span itemprop="name" class="text-[#D6BD7F]"><?php echo get_the_title(); ?></span>
 					<meta itemprop="position" content="<?php echo ++$i; ?>" />
 				</li>
 			<?php elseif(is_single()): ?>
@@ -133,7 +133,7 @@ $i=0
 					<?php endif; ?>
 				<?php endif; ?>
 				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="inline">
-					<span itemprop="name" class="text-[#393488]"><?php echo get_the_title(); ?></span>
+					<span itemprop="name" class="text-[#D6BD7F]"><?php echo get_the_title(); ?></span>
 					<meta itemprop="position" content="<?php echo ++$i; ?>" />
 				</li>
 			<?php elseif (is_tax('excursion')) : ?>
@@ -157,13 +157,13 @@ $i=0
 				<?php endif; ?>
 
 				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="inline">
-					<span itemprop="name" class="text-[#393488]"><?php echo $term->name; ?></span>
+					<span itemprop="name" class="text-[#D6BD7F]"><?php echo $term->name; ?></span>
 					<meta itemprop="position" content="<?php echo ++$i; ?>" />
 				</li>
 
 			<?php elseif (is_home() || is_front_page()) : ?>
 				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="inline">
-					<span itemprop="name" class="text-[#393488]">Блог</span>
+					<span itemprop="name" class="text-[#D6BD7F]">Блог</span>
 					<meta itemprop="position" content="<?php echo ++$i; ?>" />
 				</li>
 
@@ -177,12 +177,12 @@ $i=0
 				</li>
 				<li class="inline">-</li>
 				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="inline">
-					<span itemprop="name" class="text-[#393488]"><?php echo get_the_title(); ?></span>
+					<span itemprop="name" class="text-[#D6BD7F]"><?php echo get_the_title(); ?></span>
 					<meta itemprop="position" content="<?php echo ++$i; ?>" />
 				</li>
 			<?php else : ?>
 				<li itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem" class="inline">
-					<span itemprop="name" class="text-[#393488]"><?php echo get_the_title(); ?></span>
+					<span itemprop="name" class="text-[#D6BD7F]"><?php echo get_the_title(); ?></span>
 					<meta itemprop="position" content="<?php echo ++$i; ?>" />
 				</li>
 			<?php endif; ?>

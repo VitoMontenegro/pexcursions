@@ -49,17 +49,17 @@ if (isset($category_id)) {
 						$returnGrade = true;
 
 						$json_decode = json_decode(get_post_meta(get_the_ID(), 'tickets', 1));
-						$sopr = $fields['id_crm_eks'];
+						$sopr = (isset($fields['id_crm_eks']) && !empty($fields['id_crm_eks']) ) ? $fields['id_crm_eks'] : '' ;
 						if(!$json_decode && $sopr){
 							$sopr_post = get_posts([
-									'post_type' => 'tours',
-									'post_status' => 'any',
-									'meta_query' => [
-											[
-													'key' => 'id_crm',
-													'value' => $sopr
-											]
+								'post_type' => 'tours',
+								'post_status' => 'any',
+								'meta_query' => [
+									[
+										'key' => 'id_crm',
+										'value' => $sopr
 									]
+								]
 							])[0];
 							$json_decode = json_decode(get_post_meta($sopr_post->ID, 'tickets', 1));
 						}
@@ -162,19 +162,10 @@ if (isset($category_id)) {
 								</a>
 
 								<?php if (isset($fields['duration']) && $fields['duration']) : ?>
-									<div class="absolute left-[22px] bottom-[18px] flex gap-1 items-center bg-[#FFFFFF] rounded-[6px] h-[28px] px-3">
-										<svg xmlns="http://www.w3.org/2000/svg" width="19" height="20" viewBox="0 0 19 20" fill="none">
-											<g clip-path="url(#clip0_2001_272)">
-												<path d="M9.20006 1.86499C13.6901 1.86499 17.3301 5.50499 17.3301 9.99499C17.3301 14.485 13.6901 18.125 9.20006 18.125C4.71006 18.125 1.06006 14.495 1.06006 10.005C1.06006 5.51499 4.70006 1.86499 9.20006 1.86499Z" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-												<path d="M8.47021 5.95508V10.3551" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-												<path d="M12.2802 12.555L8.47021 10.355" stroke="#6B7280" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-											</g>
-											<defs>
-												<clipPath id="clip0_2001_272">
-													<rect width="18.39" height="18.39" fill="white" transform="translate(0 0.804932)"/>
-												</clipPath>
-											</defs>
-										</svg>
+									<div class="absolute left-4 sm:left-6 bottom-[18px] flex gap-1 items-center bg-[#FFFFFF] rounded-[6px] h-[28px] px-2">
+										<span class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+											<img src="<?php echo get_stylesheet_directory_uri(); ?>/img/clock.svg" alt="" class="object-cover">
+										</span>
 										<div class="text-[#6B7280] leading-0"><?php echo $fields['duration']; ?></div>
 									</div>
 								<?php endif ?>
@@ -184,31 +175,31 @@ if (isset($category_id)) {
 									$bg_stick = (isset($fields['sticker_background']) &&!empty($fields['sticker_background']) ) ? $fields['sticker_background'] : "#D45E5E";
 									$bg_color = (isset($fields['sticker_text']) &&!empty($fields['sticker_text']) ) ? $fields['sticker_text'] : "#FFF";
 									?>
-									<div class="absolute left-[22px] top-[18px] flex items-center rounded-[6px] h-[34px] px-4 text-white" style="background: <?php echo $bg_stick;?>;color:<?php echo $bg_color;?>">
+									<div class="absolute left-4 sm:left-6 top-[18px] flex items-center rounded-[6px] h-[34px] px-4 text-white" style="background: <?php echo $bg_stick;?>;color:<?php echo $bg_color;?>">
 										<div class="leading-0"><?php echo $fields['sticker'];?></div>
 									</div>
 								<?php endif ?>
 
 
-								<button class="absolute right-[20px] top-[10px] wish-btn w-12 h-12 flex items-center justify-center group" data-wp-id="<?php echo $post->ID; ?>" aria-label="Добавить в избранное">
-									<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-										<rect width="36" height="36" rx="18" fill="white"/>
-										<path d="M10.318 12.318C8.56066 14.0754 8.56066 16.9246 10.318 18.682L18.0001 26.364L25.682 18.682C27.4393 16.9246 27.4393 14.0754 25.682 12.318C23.9246 10.5607 21.0754 10.5607 19.318 12.318L18.0001 13.6361L16.682 12.318C14.9246 10.5607 12.0754 10.5607 10.318 12.318Z" stroke="#1A1A18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									</svg>
+								<button class="absolute right-4 sm:right-[18px] top-[10px] sm:top-[18px]  w-12 h-12 flex items-center justify-center group" data-wp-id="<?php echo $post->ID; ?>" aria-label="Добавить в избранное">
+									<span class="w-9 h-9 rounded-full bg-white flex items-center justify-center">
+										<img src="<?php echo get_stylesheet_directory_uri(); ?>/img/heart.svg" alt="" class="object-cover block group-[:hover]:hidden group-[.active]:hidden">
+										<img src="<?php echo get_stylesheet_directory_uri(); ?>/img/heart-hover.svg" alt="" class="object-cover hidden group-[:hover]:block group-[.active]:hidden">
+										<img src="<?php echo get_stylesheet_directory_uri(); ?>/img/heart-active.svg" alt="" class="object-cover hidden group-[.active]:block">
+									</span>
 								</button>
 								<?php if (isset($fields['video_after_gates']) && !empty($fields['video_after_gates'])): ?>
 									<button class="absolute right-[65px] top-[10px] wish-btn w-12 h-12 flex items-center justify-center group" aria-label="Смотреть видео">
-										<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-											<rect width="36" height="36" rx="18" fill="white"/>
-											<path d="M25.1906 19.8041C26.2698 19.2633 26.2698 17.7367 25.1906 17.1959L13.1422 11.1581C12.2051 10.6885 11 11.3234 11 12.4622L11 24.5378C11 25.6766 12.2051 26.3115 13.1422 25.8419L25.1906 19.8041Z" stroke="black" stroke-width="2"/>
-										</svg>
+										<span class="w-6 h-6 rounded-full bg-white flex items-center justify-center">
+											<img src="<?php echo get_stylesheet_directory_uri(); ?>/img/play.svg" alt="" class="object-cover">
+										</span>
 									</button>
 								<?php endif ?>
 							</div>
-							<div class="px-4 flex flex-col gap-5 h-full">
-								<div class="flex flex-col gap-1 flex-grow relative">
+							<div class="px-4 sm:px-6 flex flex-col gap-5 h-full">
+								<div class="flex flex-col gap-1 flex-grow relative min-h-[96px]">
 									<a href="<?php echo get_permalink($post->ID); ?>" class="card-title text-[18px] lg:text-[20px] font-bold leading-[1.2] three-lines"><?php echo get_the_title($post->ID); ?></a>
-									<div class="date flex items-center gap-2">
+									<div class="date flex items-center gap-2 text-[14px] sm:text-[16px]">
 										<?php if(count($uniqueArray)) : ?>
 											<div class="flex items-center gap-[2px] text-[#6B7280]">
 												<svg xmlns="http://www.w3.org/2000/svg" width="18" height="19" viewBox="0 0 18 19" fill="none">
@@ -224,12 +215,21 @@ if (isset($category_id)) {
 											</div>
 											<?php if(count($uniqueArray)>2) : ?>
 												<button aria-expanded="true" data-close-on-click="false" class="dropdown-button text-[#52A6B2]">Другие даты</button>
-												<div class="dropdown-menu absolute right-0 z-10 mt-2  w-full max-w-[310px] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none hidden">
+												<div class="dropdown-menu absolute right-0 z-10 mt-2  w-[310px] origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none hidden">
 
-													<div class="item">
-														<div class="p-4 calendar-wrapper item" data-dates='<?php echo json_encode($datesArray) ;?>'>
-															<button class="close-menu ">Закрыть</button>
-															<div class="calendar"></div>
+													<div class="">
+														<div class="p-4 calendar-wrapper" data-dates='<?php echo json_encode($datesArray) ;?>'>
+															<div class="flex justify-end relative -t-[2px]">
+																<button class="close-menu ">
+																	<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">
+																		<path d="M12 20L16 16M16 16L19.6667 12.3333M16 16L12 12M16 16L20 20M29 16C29 23.1797 23.1797 29 16 29C8.8203 29 3 23.1797 3 16C3 8.8203 8.8203 3 16 3C23.1797 3 29 8.8203 29 16Z" stroke="#9CA3AF" stroke-width="2.67" stroke-linecap="round" stroke-linejoin="round"/>
+																	</svg>
+																</button>
+															</div>
+															<div class="calendar pointer-events-none"></div>
+															<a href="<?php echo get_permalink($post->ID); ?>" class="px-2 h-8 text-[14px] rounded-md bg-[#D6BD7F] flex sm:hidden items-center justify-center text-white">
+																Подробнее
+															</a>
 														</div>
 													</div>
 												</div>
@@ -252,7 +252,7 @@ if (isset($category_id)) {
 											</div>
 										<?php endif ?>
 									</div>
-									<a href="<?php echo get_permalink($post->ID); ?>" class="inline-flex h-11 items-center justify-center font-bold   px-7 sm:px-10 rounded-md bg-[#52A6B2] text-white text-[12px] lg:text-sm">Подробнее</a>
+									<a href="<?php echo get_permalink($post->ID); ?>" class="inline-flex h-11 items-center justify-center font-medium px-7 sm:px-10 rounded-md bg-[#52A6B2] hover:bg-[#44909B] text-white text-[14px] lg:text-[16px]">Подробнее</a>
 								</div>
 							</div>
 						</div>
